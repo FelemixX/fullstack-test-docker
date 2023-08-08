@@ -62,7 +62,6 @@ $(document).ready(function () {
             },
             success: function (data) {
                 let elements = '';
-                console.log(data);
                 if (data.comments.length == 0) {
                     if (currentPage == 1) {
                         $('#comment_list').html('<h4 class="text-center">Ничего не найдено</h4>');
@@ -107,7 +106,6 @@ $(document).ready(function () {
                 console.trace([jqXHR, textStatus, errorThrown]);
             },
             success: function (data) {
-                console.log(data);
                 if (data.error !== '') {
                     $('#error').html('<div class="alert alert-danger" role="alert">' + data.error + '</div>');
                     return;
