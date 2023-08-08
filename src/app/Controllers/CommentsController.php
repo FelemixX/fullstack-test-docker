@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Controllers\AbstractControllers\AbstractController;
 use App\Models\CommentsModel;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class CommentsController extends AbstractControllers\AbstractController
 {
@@ -28,14 +27,22 @@ class CommentsController extends AbstractControllers\AbstractController
     public function index()
     {
         helper('html');
-        $comments = $this->read();
 
-        return view(
-            'comments/index',
-            [
-                'comments' => $comments
-            ]
-        );
+        $page = $this->request->getVar('page');
+        $sortField = $this->request->getVar('sort');
+        $sortDirection = $this->request->getVar('direction');
+
+        if ($page && $sortField && $sortDirection) {
+            $comments = $this->read($page, $sortField, $sortDirection);
+
+            return $this->response->setJSON($comments);
+        } else {
+            $comments = $this->read();
+        }
+
+        return view('templates/main/header', ['title' => 'Комментарии']) .
+            view('comments/index', ['comments' => $comments['comments'], 'pages' => $comments['pages']]) .
+            view('templates/main/footer');
     }
 
     /**
@@ -76,23 +83,26 @@ class CommentsController extends AbstractControllers\AbstractController
     /**
      * @return array
      */
-    public function read(): array
+        public function read(int $page = 1, string $sortField = 'date', string $sortDirection = 'asc'): array
     {
         $model = static::getModel();
-        $commentsData = $model->getComments();
-
-        if (empty($commentsData)) {
+        $commentsData = $model->getComments($page, $sortField, $sortDirection);
+        if (empty($commentsData['comments'])) {
             return [];
         }
 
+        $pages = $commentsData['pages'];
         $comments = [];
-        foreach ($commentsData as $comment) {
+        foreach ($commentsData['comments'] as $comment) {
             $comments[$comment->id]['name'] = $comment->name;
             $comments[$comment->id]['text'] = $comment->text;
             $comments[$comment->id]['date'] = $comment->date;
         }
 
-        return $comments;
+        return [
+            'comments' => $comments,
+            'pages' => $pages,
+        ];
     }
 
     public function update()
@@ -100,15 +110,19 @@ class CommentsController extends AbstractControllers\AbstractController
         throw new \Exception('Method is not implemented');
     }
 
-    public function delete(): bool
+    /**
+     * @throws \Exception
+     */
+    public function delete()
     {
         $this->checkIsAjax();
         $model = static::getModel();
-        $id = $this->request->getPost([
-            'id',
-        ]);
+        $request = $this->request->getRawInput();
+        if (!intval($request['id'])) {
+            return false;
+        }
 
-        return $model->deleteComment($id);
+        echo $model->deleteComment(intval($request['id']));
     }
 
     /**

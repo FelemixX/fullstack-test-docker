@@ -15,7 +15,7 @@ class CommentsModel extends Model
      * @param string $sortDirection
      * @return array
      */
-    public function getComments(int $page = 1, int $limit = 3, string $sortField = 'date', string $sortDirection = 'asc'): array
+    public function getComments(int $page = 1, string $sortField = 'date', string $sortDirection = 'asc', int $limit = 3): array
     {
         if ($page < 1) {
             return [];
@@ -30,18 +30,34 @@ class CommentsModel extends Model
         ];
 
         $builder = $this->initBuilder();
-
-        return $builder->select($selectFields)
+        $comments = $builder->select($selectFields)
             ->orderBy($sortField, $sortDirection)
             ->get($limit, $offset)
             ->getResult();
+
+        $totalComments = $builder->countAllResults();
+        $totalPages = ceil($totalComments / $limit);
+        $startPage = max(1, $page - 2);
+        $endPage = min($totalPages, $page + 2);
+        $pages = range($startPage, $endPage);
+
+        return [
+            'comments' => $comments,
+            'pages' => $pages,
+        ];
     }
 
     public function saveComment(array $data): bool
     {
-        $this->initBuilder();
+        $builder = $this->initBuilder();
         try {
-            $this->doInsert($data);
+            $builder->insert(
+                [
+                    'name' => $data['name'],
+                    'text' => $data['text'],
+                    'date' => $data['date'],
+                ]
+            );
         } catch (CodeIgniter\Database\Exceptions\DatabaseException $databaseException) {
             return false;
         }
@@ -49,12 +65,12 @@ class CommentsModel extends Model
         return true;
     }
 
-    public function deleteComment(int $id): bool
+    public function deleteComment(int $id)
     {
-        $this->initBuilder();
+        $builder = $this->initBuilder();
         try {
-            $this->doDelete();
-            return true;
+            $builder->where('id', $id);
+            $builder->delete();
         } catch (CodeIgniter\Database\Exceptions\DatabaseException $databaseException) {
             return false;
         }
