@@ -24,14 +24,14 @@
                 <div>
                     <div id="comment_list">
                         <?php if (!empty($comments)): ?>
-                            <?php foreach ($comments as $id => $comment): ?>
+                            <?php foreach ($comments as $comment): ?>
                                 <div class="card mb-4 shadow-sm">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between">
                                             <p>
                                                 <?= $comment['text'] ?>
                                             </p>
-                                            <button type="button" class="close delete-comment" aria-label="Close" data-id="<?= $id ?>">
+                                            <button type="button" class="close delete-comment" aria-label="Close" data-id="<?= $comment['id'] ?>">
                                                 <span aria-hidden="true">×</span>
                                             </button>
                                         </div>
@@ -89,4 +89,5 @@
             </div>
         </div>
     </div>
-<?= script_tag(base_url('comments/dist/script.js')) ?>
+<?= script_tag(base_url('comments/src/script.js')) ?>
+<?php echo '<script>console.log(' . json_encode($comments) . ');</script>'; //TODO: DELETE IV_LOGGING?>

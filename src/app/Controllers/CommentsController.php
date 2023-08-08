@@ -33,8 +33,7 @@ class CommentsController extends AbstractControllers\AbstractController
         $sortDirection = $this->request->getVar('direction');
 
         if ($page && $sortField && $sortDirection) {
-            $comments = $this->read($page, $sortField, $sortDirection);
-
+            $comments = $this->read($page, $sortField, strtoupper($sortDirection));
             return $this->response->setJSON($comments);
         } else {
             $comments = $this->read();
@@ -83,7 +82,7 @@ class CommentsController extends AbstractControllers\AbstractController
     /**
      * @return array
      */
-        public function read(int $page = 1, string $sortField = 'date', string $sortDirection = 'asc'): array
+    public function read(int $page = 1, string $sortField = 'date', string $sortDirection = 'asc'): array
     {
         $model = static::getModel();
         $commentsData = $model->getComments($page, $sortField, $sortDirection);
@@ -94,9 +93,12 @@ class CommentsController extends AbstractControllers\AbstractController
         $pages = $commentsData['pages'];
         $comments = [];
         foreach ($commentsData['comments'] as $comment) {
-            $comments[$comment->id]['name'] = $comment->name;
-            $comments[$comment->id]['text'] = $comment->text;
-            $comments[$comment->id]['date'] = $comment->date;
+            $comments[] = [
+                'id' => $comment->id,
+                'name' => $comment->name,
+                'text' => $comment->text,
+                'date' => $comment->date,
+            ];
         }
 
         return [

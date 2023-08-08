@@ -76,7 +76,7 @@ $(document).ready(function () {
                 } else {
                     for (let key in data.comments) {
                         const element = data.comments[key];
-                        elements += '<div class="card mb-4 shadow-sm">' + '<div class="card-body">' + '<div class="d-flex justify-content-between">' + '<p>' + element.text + '</p>' + '<button type="button" class="close delete-comment" aria-label="Close" data-id=' + key + '>' + '<span aria-hidden="true">×</span>' + '</button>' + '</div>' + '<div class="d-flex justify-content-between">' + '<div class="d-flex flex-row align-items-center">' + '<p class="small mb-0 ms-2">' + element.name + '</p>' + '</div>' + '<div class="d-flex flex-row align-items-center">' + '<p class="small text-muted mb-0">' + element.date + '</p>' + '</div>' + '</div>' + '</div>' + '</div>';
+                        elements += '<div class="card mb-4 shadow-sm">' + '<div class="card-body">' + '<div class="d-flex justify-content-between">' + '<p>' + element.text + '</p>' + '<button type="button" class="close delete-comment" aria-label="Close" data-id=' + element.id + '>' + '<span aria-hidden="true">×</span>' + '</button>' + '</div>' + '<div class="d-flex justify-content-between">' + '<div class="d-flex flex-row align-items-center">' + '<p class="small mb-0 ms-2">' + element.name + '</p>' + '</div>' + '<div class="d-flex flex-row align-items-center">' + '<p class="small text-muted mb-0">' + element.date + '</p>' + '</div>' + '</div>' + '</div>' + '</div>';
                     }
                     $('#comment_list').html(elements);
 
@@ -106,8 +106,9 @@ $(document).ready(function () {
                 console.trace([jqXHR, textStatus, errorThrown]);
             },
             success: function (data) {
+
                 if (data.error !== '') {
-                    $('#error').html('<div class="alert alert-danger" role="alert">' + data.error + '</div>');
+                    showError(data.error.name)
                     return;
                 }
 
@@ -119,4 +120,8 @@ $(document).ready(function () {
         $('#user_email').val('');
         $('#user_comment').val('');
     };
+
+    function showError(errorString) {
+        $('#error').html('<div class="alert alert-danger" role="alert">' + errorString + '</div>');
+    }
 });
