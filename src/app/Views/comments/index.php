@@ -89,5 +89,5 @@
             </div>
         </div>
     </div>
-<?= script_tag(base_url('comments/src/script.js')) ?>
+<?= script_tag(base_url('comments/dist/script.js')) ?>
 <?php echo '<script>console.log(' . json_encode($comments) . ');</script>'; //TODO: DELETE IV_LOGGING?>
