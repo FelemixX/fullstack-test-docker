@@ -65,14 +65,14 @@ class CommentsController extends AbstractControllers\AbstractController
             );
             $model = static::getModel();
 
-            $model->saveComment([
+            $res = $model->saveComment([
                 'name' => $request['name'],
                 'text' => $request['text'],
                 'date' => date(static::TIME_FORMAT),
             ]);
 
             $response = [
-                'error' => '',
+                'error' =>  $res === false ? 'Ошибка при сохранении' : '',
             ];
         }
 
