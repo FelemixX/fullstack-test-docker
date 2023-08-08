@@ -54,7 +54,7 @@ $(document).ready(function () {
       },
       success: function success(data) {
         var elements = '';
-        if (data.comments.length == 0) {
+        if (!data.comments) {
           if (currentPage == 1) {
             $('#comment_list').html('<h4 class="text-center">Ничего не найдено</h4>');
             $('#pagination').html('');
