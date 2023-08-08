@@ -6,7 +6,7 @@ abstract class AbstractController extends \App\Controllers\BaseController
 {
     abstract function create();
 
-    abstract function read();
+    abstract function read(int $page, string $sortField, string $sortDirection);
 
     abstract function update();
 
