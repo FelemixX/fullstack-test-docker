@@ -1,3 +1,15 @@
+# Дамп базы 
+create table comments
+(
+    id   int unsigned auto_increment
+        primary key,
+    name varchar(319) not null,
+    text text         not null,
+    date datetime     not null on update CURRENT_TIMESTAMP
+);
+
+
+
 # Тестовое задание на основе Docker и CodeIgniter для Fullstack разработчика
 
 ## Первоначальная настройка
