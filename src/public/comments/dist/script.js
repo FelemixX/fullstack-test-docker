@@ -94,8 +94,12 @@ $(document).ready(function () {
         console.trace([jqXHR, textStatus, errorThrown]);
       },
       success: function success(data) {
-        if (data.error !== '') {
+        if (data.error.name !== undefined) {
           showError(data.error.name);
+          return;
+        }
+        if (data.error.text !== undefined) {
+          showError(data.error.text);
           return;
         }
         currentPage = 1;

@@ -107,8 +107,13 @@ $(document).ready(function () {
             },
             success: function (data) {
 
-                if (data.error !== '') {
+                if (data.error.name !== undefined) {
                     showError(data.error.name)
+                    return;
+                }
+
+                if (data.error.text !== undefined) {
+                    showError(data.error.text)
                     return;
                 }
 
