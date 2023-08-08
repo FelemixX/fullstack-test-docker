@@ -62,7 +62,7 @@ $(document).ready(function () {
             },
             success: function (data) {
                 let elements = '';
-                if (data.comments.length == 0) {
+                if (!data.comments) {
                     if (currentPage == 1) {
                         $('#comment_list').html('<h4 class="text-center">Ничего не найдено</h4>');
                         $('#pagination').html('');
